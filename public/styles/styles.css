@@ -1,0 +1,41 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+#map-container {
+    width: 60vw;
+    height: auto;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+}
+
+#info {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+path {
+    fill: #ccc;
+    transition: fill 0.3s ease;
+}
+
+path:hover {
+    fill: rgba(0, 140, 0, 0.8);
+}
+
+path.selected {
+    fill: rgba(0, 200, 0, 0.8);
+}
