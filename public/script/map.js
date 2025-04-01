@@ -1,37 +1,45 @@
+let isMouseDown = false;
+let startX, startY;
+let isMouseMoving = false;
+let scale = 1;
+let selectedCountries = new Set();
+
 async function loadMap() {
     const mapContainer = document.getElementById('map-container');
     const info = document.getElementById('info');
-    const mapa = await loadSVGMap(mapContainer);
+    const map = await loadSVGMap(mapContainer);
 
-    let selectedCountries = new Set();
-    let isMouseDown = false;
-    let startX, startY;
-    let isMouseMoving = false;
-    let scale = 1;
-
-    setupZoom(mapa);
-    setupDrag(mapa);
-    setupCountryHover(mapa, info);
-    setupCountryClick(mapa, selectedCountries, isMouseMoving);
+    initializeMapInteractions(map, info);
 }
 
 async function loadSVGMap(mapContainer) {
     const response = await fetch('../images/europe.svg');
-    const svgText = await response.text();
-    mapContainer.innerHTML = svgText;
+    mapContainer.innerHTML = await response.text();
     return mapContainer.querySelector('svg');
 }
 
-function setupZoom(mapa) {
-    mapa.addEventListener('wheel', (event) => {
+function initializeMapInteractions(map, info) {
+    setupZoom(map);
+    setupDrag(map);
+    setupCountryHover(map, info);
+    setupCountryClick(map);
+}
+
+function setupZoom(map) {
+    map.addEventListener('wheel', (event) => {
         event.preventDefault();
-        adjustZoom(mapa, event.deltaY);
+        adjustZoom(map, event.deltaY);
     });
 }
 
-function adjustZoom(mapa, deltaY) {
-    const scale = deltaY < 0 ? 0.9 : 1.1;
-    const viewBox = mapa.getAttribute('viewBox').split(' ').map(Number);
+function adjustZoom(map, deltaY) {
+    if (deltaY < 0) {
+        scale = 0.9;
+    } else {
+        scale = 1.1;
+    }
+
+    const viewBox = map.getAttribute('viewBox').split(' ').map(Number);
     const width = viewBox[2];
     const height = viewBox[3];
 
@@ -40,49 +48,49 @@ function adjustZoom(mapa, deltaY) {
     const centerX = viewBox[0] + (width - newWidth) / 2;
     const centerY = viewBox[1] + (height - newHeight) / 2;
 
-    mapa.setAttribute('viewBox', `${centerX} ${centerY} ${newWidth} ${newHeight}`);
+    map.setAttribute('viewBox', `${centerX} ${centerY} ${newWidth} ${newHeight}`);
 }
 
-function setupDrag(mapa) {
-    mapa.addEventListener('mousedown', (event) => startDragging(event, mapa));
-    mapa.addEventListener('mousemove', (event) => dragMap(event, mapa));
-    mapa.addEventListener('mouseup', stopDragging);
-    mapa.addEventListener('mouseleave', stopDragging);
+function setupDrag(map) {
+    map.addEventListener('mousedown', (event) => startDragging(event, map));
+    map.addEventListener('mousemove', (event) => dragMap(event, map));
+    map.addEventListener('mouseup', stopDragging);
+    map.addEventListener('mouseleave', stopDragging);
 }
 
-function startDragging(event, mapa) {
+function startDragging(event, map) {
     isMouseDown = true;
     startX = event.clientX;
     startY = event.clientY;
     isMouseMoving = false;
-    mapa.style.cursor = 'grabbing';
+    event.target.style.cursor = 'grabbing';
 }
 
-function dragMap(event, mapa) {
+function dragMap(event, map) {
     if (!isMouseDown) return;
 
     isMouseMoving = true;
     const dx = event.clientX - startX;
     const dy = event.clientY - startY;
 
-    const viewBox = mapa.getAttribute('viewBox').split(' ').map(Number);
+    const viewBox = map.getAttribute('viewBox').split(' ').map(Number);
     const speedScale = viewBox[2] / 1000;
 
     viewBox[0] -= dx * speedScale;
     viewBox[1] -= dy * speedScale;
-    mapa.setAttribute('viewBox', `${viewBox[0]} ${viewBox[1]} ${viewBox[2]} ${viewBox[3]}`);
+    map.setAttribute('viewBox', `${viewBox[0]} ${viewBox[1]} ${viewBox[2]} ${viewBox[3]}`);
 
     startX = event.clientX;
     startY = event.clientY;
 }
 
-function stopDragging() {
+function stopDragging(event) {
     isMouseDown = false;
-    mapa.style.cursor = 'default';
+    event.target.style.cursor = 'default';
 }
 
-function setupCountryHover(mapa, info) {
-    mapa.querySelectorAll('path').forEach(path => {
+function setupCountryHover(map, info) {
+    map.querySelectorAll('path').forEach(path => {
         const country = path.getAttribute('zeme') || "Neznámá země";
         const capital = path.getAttribute('hlavni_mesto') || "Neznámé hlavní město";
 
@@ -96,8 +104,8 @@ function setupCountryHover(mapa, info) {
     });
 }
 
-function setupCountryClick(mapa, selectedCountries, isMouseMoving) {
-    mapa.querySelectorAll('path').forEach(path => {
+function setupCountryClick(map) {
+    map.querySelectorAll('path').forEach(path => {
         const country = path.getAttribute('zeme') || "Neznámá země";
 
         path.addEventListener('click', () => {
