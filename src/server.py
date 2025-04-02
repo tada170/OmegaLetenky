@@ -26,8 +26,19 @@ def receive_data():
     data = request.json
     selected_countries = data.get("selected", [])
     print(f"Received data for: {selected_countries}")
+
     best_path = create_best_path(selected_countries)
-    return jsonify(best_path), 200
+
+    if not best_path:
+        return jsonify({'error': 'Nepodařilo se vygenerovat cestu'}), 400
+
+    price = 0
+
+    for i in range(len(best_path) - 1):
+        print(predict_price(best_path[i]["city"], best_path[i + 1]["city"]))
+        price += predict_price(best_path[i]["city"], best_path[i + 1]["city"])
+
+    return jsonify({"total_price": price}), 200
 
 
 def create_best_path(selected_countries):
@@ -36,12 +47,13 @@ def create_best_path(selected_countries):
         return {'error': 'Could not geocode all selected countries'}
 
     best_path, best_cost = branch_and_bound(geocode_array)
-
-    return {'best_path': ' -> '.join([city['city'] for city in best_path])}
+    print(f"Best path: {best_path}")
+    return best_path
 
 
 def get_geocode(selected_countries):
     geocode_array = []
+    print(selected_countries)
     for city in selected_countries:
         location = geolocator.geocode(city)
         if location:
@@ -88,15 +100,10 @@ label_encoders = joblib.load(label_encoders_path)
 
 features = ['Duration', 'Changes', 'Distance', 'Airline', 'Arrival City']
 
-
-@app.route('/predict', methods=['POST'])
-def predict():
-    data = request.json
-    try:
-        changes = int(data['changes'])
-        airline = data['airline']
-        arrival = data['arrival']
-        distance = get_distance(data['departure'], arrival)
+def predict_price(arrival,departue):
+        changes = 0
+        airline = "VY"
+        distance = get_distance(departue, arrival)
         duration = distance / 550
 
         new_data = pd.DataFrame([[duration, changes, distance, airline, arrival]], columns=features)
@@ -110,9 +117,7 @@ def predict():
         new_data_scaled = scaler.transform(new_data)
         price = model.predict(new_data_scaled)[0]
 
-        return jsonify({'price': price})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+        return price
 
 def get_distance(city1, city2):
     loc1 = geolocator.geocode(city1)

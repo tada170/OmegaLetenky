@@ -1,5 +1,5 @@
 async function getPrediction(departure, arrival, changes, airline) {
-    if (selectedCountries.size === 0) {
+    if (selectedCities.size === 0) {
         alert("Žádné země nejsou vybrány.");
         return;
     }
@@ -14,8 +14,8 @@ async function getPrediction(departure, arrival, changes, airline) {
     prediction.textContent = `Predikovaná cena: ${data.price.toFixed(2)} kc`;
 }
 
-async function sendSelectedCountries() {
-    if (selectedCountries.size === 0) {
+async function sendSelectedCities() {
+    if (selectedCities.size === 0) {
         alert("Žádné země nejsou vybrány.");
         return;
     }
@@ -25,7 +25,7 @@ async function sendSelectedCountries() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({selected: Array.from(selectedCountries)}),
+        body: JSON.stringify({selected: Array.from(selectedCities)}),
     });
 
     const result = await response.json();

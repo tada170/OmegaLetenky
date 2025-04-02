@@ -2,7 +2,7 @@
     let startX, startY;
     let isMouseMoving = false;
     let scale = 1;
-    let selectedCountries = new Set();
+    let selectedCities = new Set();
 
     async function loadMap() {
         const mapContainer = document.getElementById('map-container');
@@ -21,8 +21,8 @@
     function initializeMapInteractions(map, info) {
         setupZoom(map);
         setupDrag(map);
-        setupCountryHover(map, info);
-        setupCountryClick(map);
+        setupcityHover(map, info);
+        setupcityClick(map);
     }
 
     function setupZoom(map) {
@@ -89,13 +89,13 @@
         event.target.style.cursor = 'default';
     }
 
-    function setupCountryHover(map, info) {
+    function setupcityHover(map, info) {
         map.querySelectorAll('path').forEach(path => {
-            const country = path.getAttribute('zeme') || "Neznámá země";
+            const city = path.getAttribute('zeme') || "Neznámá země";
             const capital = path.getAttribute('hlavni_mesto') || "Neznámé hlavní město";
 
             path.addEventListener('mouseover', () => {
-                info.textContent = `${country} : ${capital}`;
+                info.textContent = `${city} : ${capital}`;
             });
 
             path.addEventListener('mouseleave', () => {
@@ -104,19 +104,19 @@
         });
     }
 
-    function setupCountryClick(map) {
+    function setupcityClick(map) {
         map.querySelectorAll('path').forEach(path => {
-            const country = path.getAttribute('zeme') || "Neznámá země";
+            const city = path.getAttribute('hlavni_mesto') || "Neznáme hlavni mesto";
 
             path.addEventListener('click', () => {
                 if (isMouseMoving) return;
 
-                if (country && !selectedCountries.has(country)) {
+                if (city && !selectedCities.has(city)) {
                     path.classList.add('selected');
-                    selectedCountries.add(country);
-                } else if (country) {
+                    selectedCities.add(city);
+                } else if (city) {
                     path.classList.remove('selected');
-                    selectedCountries.delete(country);
+                    selectedCities.delete(city);
                 }
             });
         });
