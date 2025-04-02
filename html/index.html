@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interaktivní mapa Evropy</title>
     <link rel="stylesheet" href="public/styles/styles.css">
+    <link rel="icon" type="image/png" href="public/images/airplane-icon.png">
 </head>
 <body>
 <h1>Interaktivní mapa Evropy</h1>
@@ -13,7 +14,10 @@
 <div id="map-container"></div>
 
 <p id="info">Najetím myši zobrazíš hlavní město</p>
+<button onclick="getPrediction('Lisabon', 'Athény', 1, 'U2')">Vypočítej cestu</button>
 <button onclick="sendSelectedCountries()">Vypočítej cestu</button>
+<p id="prediction"></p>
 <script src="public/script/map.js"></script>
+<script src="public/script/prediction.js"></script>
 </body>
 </html>
