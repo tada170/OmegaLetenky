@@ -13,7 +13,7 @@
     }
 
     async function loadSVGMap(mapContainer) {
-        const response = await fetch('public/images/europe.svg');
+        const response = await fetch('static/images/europe.svg');
         mapContainer.innerHTML = await response.text();
         return mapContainer.querySelector('svg');
     }
@@ -107,16 +107,25 @@
     function setupcityClick(map) {
         map.querySelectorAll('path').forEach(path => {
             const city = path.getAttribute('hlavni_mesto') || "Neznáme hlavni mesto";
+            const latitude = path.getAttribute('hlavni_mesto_latitude') || "N/A";
+            const longitude = path.getAttribute('hlavni_mesto_longitude') || "N/A";
+
+            const cityInfo = {
+                name: city,
+                latitude: latitude,
+                longitude: longitude
+            };
+            console.log(cityInfo)
 
             path.addEventListener('click', () => {
                 if (isMouseMoving) return;
 
-                if (city && !selectedCities.has(city)) {
+                if (cityInfo && !selectedCities.has(cityInfo)) {
                     path.classList.add('selected');
-                    selectedCities.add(city);
-                } else if (city) {
+                    selectedCities.add(cityInfo);
+                } else if (cityInfo) {
                     path.classList.remove('selected');
-                    selectedCities.delete(city);
+                    selectedCities.delete(cityInfo);
                 }
             });
         });
