@@ -8,15 +8,42 @@
     <link rel="icon" type="image/png" href="static/images/airplane-icon.png">
 </head>
 <body>
-<h1>Interaktivní mapa Evropy</h1>
-<p>Přejeď myší přes zemi pro zobrazení hlavního města. Kliknutím uložíš výběr.</p>
 
-<div id="map-container"></div>
+<header>
+    <h1>✈️ Plánovač cest po Evropě</h1>
+    <p>Vyber si destinace a vypočítej ideální trasu a cenu!</p>
+</header>
 
-<p id="info">Najetím myši zobrazíš hlavní město</p>
-<button onclick="sendSelectedCities()">Vypočítej cestu</button>
-<p id="prediction"></p>
+<div class="container">
+    <div id="loading"  class="loader"></div>
+    <h2>Interaktivní mapa Evropy</h2>
+    <p>Přejeď myší přes zemi pro zobrazení hlavního města. Kliknutím vybereš destinaci.</p>
+
+    <div id="map-container"></div>
+
+    <p id="info">Najetím myši zobrazíš hlavní město</p>
+
+    <h3>Vybrané destinace:</h3>
+    <ul id="selected-cities"></ul>
+
+    <div class="button-container">
+        <button onclick="sendSelectedCities()">✈️ Naplánovat cestu</button>
+    </div>
+
+    <p id="prediction"></p>
+
+    <div id="result">
+        <p id="calculated-route"></p>
+        <p id="total-price"></p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Cestovní plánovač | Vytvořeno s ❤️</p>
+</footer>
+
 <script src="static/script/map.js"></script>
 <script src="static/script/prediction.js"></script>
+
 </body>
 </html>

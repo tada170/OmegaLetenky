@@ -18,4 +18,4 @@ def flight_route(app):
         for i in range(len(best_path) - 1):
             price += predict_price(best_path[i], best_path[i + 1])
 
-        return jsonify({"total_price": price}), 200
+        return jsonify({"total_price": round(price,2),"best_path":best_path}), 200
