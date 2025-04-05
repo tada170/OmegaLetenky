@@ -116,6 +116,100 @@ footer {
     font-size: 16px;
 }
 
+#settings .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#settings label {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+#settings input[type="number"] {
+    padding: 6px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 80px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 55px;
+    height: 30px;
+    margin-left: 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+#settings{
+    font-size: 18px;
+    color: #333;
+    padding: 15px;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f9fff9;
+}
+#settings .settings-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#settings .form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 #result {
     margin-top: 20px;
     font-size: 18px;

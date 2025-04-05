@@ -5,21 +5,23 @@ async function sendSelectedCities() {
 
     const cities = Array.from(selectedCities);
 
-    if (cities.length === 0) {
+    if (cities.length <= 1) {
         resultElement.style.display = "block";
         calculatedRouteElement.textContent = '';
-        totalPriceElement.textContent = 'Není vybrána žádná město.';
+        totalPriceElement.textContent = 'Musíš vybrat alespoň 2 města.';
         return;
     }
+    let find_best_path;
 
     const loadingElement = document.getElementById("loading");
     loadingElement.style.display = "block";
 
     try {
+        find_best_path = document.querySelectorAll('input[type="checkbox"]:checked').length > 0;
         const response = await fetch('/data', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({selected: cities})
+            body: JSON.stringify({selected: cities, best_path: find_best_path})
         });
 
         const resultData = await response.json();
@@ -37,7 +39,6 @@ async function sendSelectedCities() {
         calculatedRouteElement.textContent = '';
         totalPriceElement.textContent = 'Chyba při spojení se serverem.';
     } finally {
-        // Když je požadavek dokončen, skrýt loading
         loadingElement.classList.add('hide-loading');
         setTimeout(() => {
             loadingElement.style.display = "none";

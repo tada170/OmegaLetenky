@@ -1,4 +1,7 @@
 import math
+from src.util.logger import setup_logger
+
+logger = setup_logger()
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371
@@ -8,14 +11,16 @@ def haversine(lat1, lon1, lat2, lon2):
 
     a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return R * c
+    distance = R * c
+    return distance
 
 def total_distance(path):
-    return sum(
+    distance = sum(
         haversine(path[i]['latitude'], path[i]['longitude'],
                   path[(i + 1) % len(path)]['latitude'], path[(i + 1) % len(path)]['longitude'])
         for i in range(len(path))
     )
+    return distance
 
 def two_opt(path):
     best_path = path
@@ -65,13 +70,12 @@ def branch_and_bound(locations):
 
 def create_best_path(cities):
     if not cities:
+        logger.error("No cities provided")
         return {'error': 'No cities provided'}
 
-    geocoded = [{'country': c['country'], 'city': c['name'], 'latitude': c['latitude'], 'longitude': c['longitude']}for c in cities]
-
-    if len(geocoded) > 10:
-        best_path = two_opt(geocoded)
+    if len(cities) > 10:
+        best_path = two_opt(cities)
     else:
-        best_path, _ = branch_and_bound(geocoded)
+        best_path, _ = branch_and_bound(cities)
 
     return best_path

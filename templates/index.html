@@ -15,9 +15,32 @@
 </header>
 
 <div class="container">
-    <div id="loading"  class="loader"></div>
+
+    <div id="loading" class="loader"></div>
     <h2>Interaktivní mapa Evropy</h2>
     <p>Přejeď myší přes zemi pro zobrazení hlavního města. Kliknutím vybereš destinaci.</p>
+    <div id="settings">
+        <div class="settings-row">
+            <div class="form-group">
+                <label for="adults">Dospělí:</label>
+                <input type="number" id="adults" min="1" value="1">
+            </div>
+
+            <div class="form-group">
+                <label for="children">Děti:</label>
+                <input type="number" id="children" min="0" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="optimize">Nejlepší cesta:</label>
+                <label class="switch">
+                    <input type="checkbox" id="optimize" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
 
     <div id="map-container"></div>
 

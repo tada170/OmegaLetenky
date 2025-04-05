@@ -118,10 +118,10 @@ function getCityInfo(path) {
     const longitude = path.getAttribute('hlavni_mesto_longitude') || "N/A";
 
     return {
-        name: city,
+        country: country,
+        city: city,
         latitude: latitude,
         longitude: longitude,
-        country: country
     };
 }
 
