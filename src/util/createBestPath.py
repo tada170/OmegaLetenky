@@ -3,6 +3,7 @@ from src.util.logger import setup_logger
 
 logger = setup_logger()
 
+
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371
     lat1, lon1, lat2, lon2 = map(math.radians, map(float, [lat1, lon1, lat2, lon2]))
@@ -14,6 +15,7 @@ def haversine(lat1, lon1, lat2, lon2):
     distance = R * c
     return distance
 
+
 def total_distance(path):
     distance = sum(
         haversine(path[i]['latitude'], path[i]['longitude'],
@@ -21,6 +23,7 @@ def total_distance(path):
         for i in range(len(path))
     )
     return distance
+
 
 def two_opt(path):
     best_path = path
@@ -41,10 +44,11 @@ def two_opt(path):
 
     return best_path
 
+
 def branch_and_bound(locations):
     n = len(locations)
     best_path = None
-    best_cost = float('inf')
+    best_cost = 1000000
 
     def search(path, visited, cost):
         nonlocal best_path, best_cost
@@ -54,7 +58,9 @@ def branch_and_bound(locations):
                               path[0]['latitude'], path[0]['longitude'])
             if cost < best_cost:
                 best_cost = cost
-                best_path = path + [path[0]]
+
+                best_path = path[:]
+                best_path.append(path[0])
             return
 
         for i in range(n):
@@ -67,6 +73,7 @@ def branch_and_bound(locations):
 
     search([locations[0]], {0}, 0)
     return best_path, best_cost
+
 
 def create_best_path(cities):
     if not cities:

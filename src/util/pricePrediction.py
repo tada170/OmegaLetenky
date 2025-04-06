@@ -1,7 +1,7 @@
 import joblib
 import pandas as pd
 from src.util.changesPrediction import predict_changes
-from src.util.locations import haversine
+from src.util.createBestPath import haversine
 from src.util.logger import setup_logger
 
 logger = setup_logger()
@@ -12,27 +12,23 @@ label_encoders_path = 'models/priceModels/label_encoders.pkl'
 
 try:
     model = joblib.load(model_path)
-    logger.info(f"Model loaded from {model_path}")
 except Exception as e:
     logger.error(f"Failed to load model: {e}")
 
 try:
     scaler = joblib.load(scaler_path)
-    logger.info(f"Scaler loaded from {scaler_path}")
 except Exception as e:
     logger.error(f"Failed to load scaler: {e}")
 
 try:
     label_encoders = joblib.load(label_encoders_path)
-    logger.info(f"Label encoders loaded from {label_encoders_path}")
 except Exception as e:
     logger.error(f"Failed to load label encoders: {e}")
 
 features = ['Duration', 'Changes', 'Distance', 'Airline', 'Arrival City','Adult']
 
-def predict_price(arrival, departure,adult):
+def predict_price(arrival, departure,adult,airline):
 
-    airline = "4U"
     distance = haversine(arrival["latitude"], arrival["longitude"], departure["latitude"], departure["longitude"])
 
     changes = predict_changes(distance)
@@ -58,7 +54,6 @@ def predict_price(arrival, departure,adult):
 
     try:
         price = model.predict(new_data_scaled)[0]
-        logger.info(f"Predicted price: {price}")
         return price
     except Exception as e:
         logger.error(f"Error predicting price: {e}")

@@ -8,7 +8,6 @@ model_path = 'models/changesModels/random_forest_model.pkl'
 
 try:
     model = joblib.load(model_path)
-    logger.info(f"Model successfully loaded from {model_path}")
 except Exception as e:
     logger.error(f"Failed to load model from {model_path}. Error: {e}")
     raise

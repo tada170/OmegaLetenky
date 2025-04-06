@@ -14,6 +14,7 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 logger = setup_logger()
 app = Flask(__name__, static_folder='static')
 logger.info('Server is runnig')
+
 index_route(app)
 flight_route(app)
 

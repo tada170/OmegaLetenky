@@ -35,7 +35,10 @@ function setupZoom(map) {
 function adjustZoom(map, deltaY) {
     scale = deltaY < 0 ? 0.9 : 1.1;
 
+    console.log(map)
     const viewBox = map.getAttribute('viewBox').split(' ').map(Number);
+
+    console.log(viewBox)
     const width = viewBox[2];
     const height = viewBox[3];
 
@@ -48,13 +51,13 @@ function adjustZoom(map, deltaY) {
 }
 
 function setupDrag(map) {
-    map.addEventListener('mousedown', (event) => startDragging(event, map));
+    map.addEventListener('mousedown', (event) => startDragging(event));
     map.addEventListener('mousemove', (event) => dragMap(event, map));
     map.addEventListener('mouseup', stopDragging);
     map.addEventListener('mouseleave', stopDragging);
 }
 
-function startDragging(event, map) {
+function startDragging(event) {
     isMouseDown = true;
     startX = event.clientX;
     startY = event.clientY;
