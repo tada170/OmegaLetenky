@@ -149,14 +149,14 @@ function deselectCity(path, cityInfo) {
 
 function addCityToSelection(cityInfo) {
     const country = document.createElement("li");
-    country.textContent = cityInfo.name;
+    country.textContent = cityInfo.city;
     selected.appendChild(country);
 }
 
 function removeCityFromSelection(cityInfo) {
     const items = selected.getElementsByTagName('li');
     for (let item of items) {
-        if (item.textContent === cityInfo.name) {
+        if (item.textContent === cityInfo.city) {
             selected.removeChild(item);
             break;
         }

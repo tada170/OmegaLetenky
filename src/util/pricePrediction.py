@@ -28,20 +28,19 @@ try:
 except Exception as e:
     logger.error(f"Failed to load label encoders: {e}")
 
-features = ['Duration', 'Changes', 'Distance', 'Airline', 'Arrival City']
+features = ['Duration', 'Changes', 'Distance', 'Airline', 'Arrival City','Adult']
 
-def predict_price(arrival, departure):
-    logger.info(f"Starting price prediction for arrival: {arrival} and departure: {departure}")
+def predict_price(arrival, departure,adult):
 
-    airline = "LH"
+    airline = "4U"
     distance = haversine(arrival["latitude"], arrival["longitude"], departure["latitude"], departure["longitude"])
 
     changes = predict_changes(distance)
 
     duration = distance / 550
     arrival_city = arrival.get("city")
-
-    new_data = pd.DataFrame([[duration, changes, distance, airline, arrival_city]], columns=features)
+    print(adult)
+    new_data = pd.DataFrame([[duration, changes, distance, airline, arrival_city,adult]], columns=features)
 
     for col in ['Airline', 'Arrival City']:
         if col in label_encoders:
