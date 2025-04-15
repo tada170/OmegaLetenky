@@ -4,6 +4,13 @@ const totalPriceElement = document.getElementById('total-price');
 const adultPrice = document.getElementById('adult-price');
 const childPrice = document.getElementById('child-price');
 
+
+/**
+ * Odesílá vybraná města, počet dospělých, dětí, informace o nejlepší trase a letecké společnosti na server.
+ * Po úspěšném odeslání dat načte výsledek a zobrazí nejlepší trasu a cenu.
+ *
+ * @returns {void} Funkce nevrací hodnotu. Data jsou odeslána na server a na základě odpovědi je aktualizován obsah stránky.
+ */
 async function sendSelectedCities() {
     const cities = Array.from(selectedCities)
     if (cities.length <= 1) {
@@ -49,7 +56,7 @@ async function sendSelectedCities() {
         if (resultResponse.ok) {
             displayRouteAndPrice(resultData);
         } else {
-            displayError('Chyba při výpočtu cesty.');
+            displayError('Chyba při výpočtu cesty - do státu pravděpodobně neexistuje žádná letenka');
         }
     } catch (error) {
         displayError('Chyba při spojení se serverem.');
@@ -58,6 +65,17 @@ async function sendSelectedCities() {
     }
 }
 
+/**
+ * Zobrazuje nejlepší trasu a ceny za dospělé a děti.
+ *
+ * @param {Object} resultData - Data z odpovědi serveru obsahující nejlepší trasu a ceny.
+ * @param {Array} resultData.best_path - Pole obsahující města v nejlepší trase.
+ * @param {number} resultData.total_price - Celková cena za všechny cestující.
+ * @param {number} resultData.adult_price - Cena za jednoho dospělého.
+ * @param {number} resultData.child_price - Cena za jedno dítě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze aktualizuje DOM s nejlepší trasou a cenami.
+ */
 function displayRouteAndPrice(resultData) {
     resultElement.style.display = "block";
     let route = '';
@@ -73,6 +91,13 @@ function displayRouteAndPrice(resultData) {
     childPrice.textContent = `Celková cena za dítě: ${resultData.child_price} Kč`;
 }
 
+/**
+ * Zobrazuje chybovou zprávu na stránce místo výsledků.
+ *
+ * @param {string} message - Chybová zpráva, která bude zobrazena.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze aktualizuje DOM a zobrazuje chybovou zprávu.
+ */
 function displayError(message) {
     resultElement.style.display = "block";
     calculatedRouteElement.textContent = '';
@@ -81,6 +106,11 @@ function displayError(message) {
     totalPriceElement.textContent = message;
 }
 
+/**
+ * Skryje prvek indikující načítání.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze skryje prvek s ID "loading".
+ */
 function hideLoading() {
     const loadingElement = document.getElementById("loading");
     loadingElement.style.display = "none";

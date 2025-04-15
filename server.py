@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from dotenv import load_dotenv
 from src.pages import index_route
-from src.routes.flightAPI import flight_route
+from src.routes.flight_api import flight_route
 from src.util.logger import setup_logger
 
 load_dotenv()

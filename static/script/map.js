@@ -5,6 +5,11 @@ let scale = 1;
 let selectedCities = new Set();
 const selected = document.getElementById('selected-cities');
 
+/**
+ * Načte mapu z externího souboru SVG a inicializuje interakce s mapou.
+ *
+ * @returns {void} Funkce nevrací hodnotu. Načítá mapu a připraví interakce.
+ */
 async function loadMap() {
     const mapContainer = document.getElementById('map-container');
     const info = document.getElementById('info');
@@ -12,12 +17,27 @@ async function loadMap() {
     initializeMapInteractions(map, info);
 }
 
+/**
+ * Načte SVG soubor mapy z externího umístění.
+ *
+ * @param {HTMLElement} mapContainer - Element, do kterého bude mapa načtena.
+ *
+ * @returns {Promise<SVGElement>} Vracení elementu SVG mapy po načtení.
+ */
 async function loadSVGMap(mapContainer) {
     const response = await fetch('static/images/europe.svg');
     mapContainer.innerHTML = await response.text();
     return mapContainer.querySelector('svg');
 }
 
+/**
+ * Inicializuje všechny interakce s mapou, jako je zoom, drag, hover a kliknutí na města.
+ *
+ * @param {SVGElement} map - SVG element mapy.
+ * @param {HTMLElement} info - Element pro zobrazení informací o městě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze nastaví interakce na mapě.
+ */
 function initializeMapInteractions(map, info) {
     setupZoom(map);
     setupDrag(map);
@@ -25,6 +45,13 @@ function initializeMapInteractions(map, info) {
     setupCityClick(map);
 }
 
+/**
+ * Nastaví zoomování na mapě pomocí kolečka myši.
+ *
+ * @param {SVGElement} map - SVG element mapy.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze nastaví událost pro zoomování.
+ */
 function setupZoom(map) {
     map.addEventListener('wheel', (event) => {
         event.preventDefault();
@@ -32,6 +59,14 @@ function setupZoom(map) {
     });
 }
 
+/**
+ * Upraví velikost a pozici mapy na základě deltaY kolečka myši.
+ *
+ * @param {SVGElement} map - SVG element mapy.
+ * @param {number} deltaY - Změna pozice kolečka myši, podle které se mění zoom.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze upraví `viewBox` atribut mapy.
+ */
 function adjustZoom(map, deltaY) {
     scale = deltaY < 0 ? 0.9 : 1.1;
 
@@ -50,6 +85,13 @@ function adjustZoom(map, deltaY) {
     map.setAttribute('viewBox', `${centerX} ${centerY} ${newWidth} ${newHeight}`);
 }
 
+/**
+ * Nastaví interakce pro tahání mapy myší.
+ *
+ * @param {SVGElement} map - SVG element mapy.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze nastaví události pro dragování.
+ */
 function setupDrag(map) {
     map.addEventListener('mousedown', (event) => startDragging(event));
     map.addEventListener('mousemove', (event) => dragMap(event, map));
@@ -57,6 +99,13 @@ function setupDrag(map) {
     map.addEventListener('mouseleave', stopDragging);
 }
 
+/**
+ * Inicializuje začátek dragování mapy při stisknutí tlačítka myši.
+ *
+ * @param {MouseEvent} event - Událost při stisknutí tlačítka myši.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze nastaví příznaky pro tahání mapy.
+ */
 function startDragging(event) {
     isMouseDown = true;
     startX = event.clientX;
@@ -65,6 +114,14 @@ function startDragging(event) {
     event.target.style.cursor = 'grabbing';
 }
 
+/**
+ * Upravuje pozici mapy během tahání na základě pohybu myši.
+ *
+ * @param {MouseEvent} event - Událost pohybu myši.
+ * @param {SVGElement} map - SVG element mapy.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze upraví `viewBox` atribut mapy.
+ */
 function dragMap(event, map) {
     if (!isMouseDown) return;
 
@@ -83,11 +140,26 @@ function dragMap(event, map) {
     startY = event.clientY;
 }
 
+/**
+ * Ukončí tahání mapy po uvolnění tlačítka myši nebo opuštění mapy.
+ *
+ * @param {MouseEvent} event - Událost při uvolnění tlačítka myši nebo opuštění mapy.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze resetuje příznaky pro tahání mapy.
+ */
 function stopDragging(event) {
     isMouseDown = false;
     event.target.style.cursor = 'default';
 }
 
+/**
+ * Nastaví interakce pro zobrazení informací o městě při najetí myši na mapu.
+ *
+ * @param {SVGElement} map - SVG element mapy.
+ * @param {HTMLElement} info - Element pro zobrazení informací o městě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze nastaví události pro hover.
+ */
 function setupCityHover(map, info) {
     map.querySelectorAll('path').forEach(path => {
         const city = path.getAttribute('zeme') || "Neznámá země";
@@ -98,14 +170,37 @@ function setupCityHover(map, info) {
     });
 }
 
+/**
+ * Zobrazí informace o městě (název města a hlavní město) při najetí myši.
+ *
+ * @param {HTMLElement} info - Element pro zobrazení informací o městě.
+ * @param {string} city - Název města.
+ * @param {string} capital - Hlavní město dané země.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze aktualizuje textový obsah elementu `info`.
+ */
 function showCityInfo(info, city, capital) {
     info.textContent = `${city} : ${capital}`;
 }
 
+/**
+ * Vymaže zobrazené informace o městě při opuštění města myší.
+ *
+ * @param {HTMLElement} info - Element pro zobrazení informací o městě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze resetuje textový obsah elementu `info`.
+ */
 function clearCityInfo(info) {
     info.textContent = 'Najetím myši zobrazíš hlavní město';
 }
 
+/**
+ * Nastaví interakce pro kliknutí na město na mapě, aby se město vybralo nebo zrušilo výběr.
+ *
+ * @param {SVGElement} map - SVG element mapy.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze nastaví událost pro kliknutí na města.
+ */
 function setupCityClick(map) {
     map.querySelectorAll('path').forEach(path => {
         const cityInfo = getCityInfo(path);
@@ -114,6 +209,17 @@ function setupCityClick(map) {
     });
 }
 
+/**
+ * Získá informace o městě, jako je název země, města, zeměpisná šířka a délka.
+ *
+ * @param {SVGElement} path - Cesta, která reprezentuje město na mapě.
+ *
+ * @returns {Object} Vrací objekt s informacemi o městě.
+ * @returns {string} return.country - Název země.
+ * @returns {string} return.city - Název města.
+ * @returns {string} return.latitude - Zeměpisná šířka hlavního města.
+ * @returns {string} return.longitude - Zeměpisná délka hlavního města.
+ */
 function getCityInfo(path) {
     const country = path.getAttribute('zeme') || "Neznámá země";
     const city = path.getAttribute('hlavni_mesto') || "Neznámé hlavní město";
@@ -128,6 +234,14 @@ function getCityInfo(path) {
     };
 }
 
+/**
+ * Zpracovává kliknutí na město. Město je buď vybráno nebo zrušeno.
+ *
+ * @param {SVGElement} path - Cesta reprezentující město na mapě.
+ * @param {Object} cityInfo - Informace o městě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze vybere nebo zruší výběr města.
+ */
 function handleCityClick(path, cityInfo) {
     if (isMouseMoving) return;
 
@@ -138,24 +252,54 @@ function handleCityClick(path, cityInfo) {
     }
 }
 
+/**
+ * Vybere město a přidá ho do seznamu vybraných měst.
+ *
+ * @param {SVGElement} path - Cesta reprezentující město na mapě.
+ * @param {Object} cityInfo - Informace o městě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze označí město jako vybrané a přidá ho do seznamu.
+ */
 function selectCity(path, cityInfo) {
     path.classList.add('selected');
     selectedCities.add(cityInfo);
     addCityToSelection(cityInfo);
 }
 
+/**
+ * Zruší výběr města a odstraní ho ze seznamu vybraných měst.
+ *
+ * @param {SVGElement} path - Cesta reprezentující město na mapě.
+ * @param {Object} cityInfo - Informace o městě.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze odstraní město z výběru.
+ */
 function deselectCity(path, cityInfo) {
     path.classList.remove('selected');
     selectedCities.delete(cityInfo);
     removeCityFromSelection(cityInfo);
 }
 
+/**
+ * Přidá město do seznamu vybraných měst na stránce.
+ *
+ * @param {Object} cityInfo - Informace o městě, které bude přidáno do seznamu.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze přidá město do seznamu na stránce.
+ */
 function addCityToSelection(cityInfo) {
     const country = document.createElement("li");
     country.textContent = cityInfo.city;
     selected.appendChild(country);
 }
 
+/**
+ * Odebere město ze seznamu vybraných měst na stránce.
+ *
+ * @param {Object} cityInfo - Informace o městě, které bude odstraněno z výběru.
+ *
+ * @returns {void} Funkce nevrací hodnotu, pouze odstraní město z DOM seznamu.
+ */
 function removeCityFromSelection(cityInfo) {
     const items = selected.getElementsByTagName('li');
     for (let item of items) {
