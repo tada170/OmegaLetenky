@@ -37,6 +37,7 @@ def two_opt(path):
     list: The improved path after applying the 2-opt algorithm.
     """
     best_path = path
+    best_path.append(path[0])
     improved = True
 
     while improved:
